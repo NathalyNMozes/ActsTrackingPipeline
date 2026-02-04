@@ -379,6 +379,7 @@ int runPipeline(const std::string& configPath) {
 	svc.baseExtensions = baseExtensions;
 	svc.surfaceAccessor.emplace(surfaceAccessor);
 	svc.referenceSurface = refSurface;
+  svc.magneticField = field;
 
   // --- FastSim helpers (digitizer + generators) ---
   SimpleDigitizer::Config digitizerCfg;
