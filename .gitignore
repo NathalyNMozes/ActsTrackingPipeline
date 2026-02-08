@@ -5,4 +5,4 @@ Run/AlignmentRun.cpp
 Run/FastSimRun.cpp
 Run/FullSimTrackingRun.cpp
 Run/FullTrackingRun.cpp
-Run/SimAlignmentRun.cpp
+Run/SimAlignmentRun.cpp.vscode/
