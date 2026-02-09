@@ -48,31 +48,76 @@ find_package(
   REQUIRED
 )
 
+# EUDAQ configuration (package or local build)
+# First: try to use a proper EUDAQ CMake package 
+# find_package(
+#   eudaq
+#   2.5.2
+#   COMPONENTS
+#     stave
+#     detector_event
+#   QUIET
+# )
+
+# set(HAVE_EUDAQ_PACKAGE OFF)
+# if (eudaq_FOUND)
+#   set(HAVE_EUDAQ_PACKAGE ON)
+#   message(STATUS "Found EUDAQ package at ${eudaq_DIR}")
+#   include("${eudaq_DIR}/eudaqStaveConfig.cmake")
+# endif()
+
+# # If no full package, allow a local minimal build with dict+headers (from_eudaq)
+# if (NOT HAVE_EUDAQ_PACKAGE)
+#   message(STATUS
+#     "EUDAQ package not found, trying local minimal EUDAQ build via EUDAQ_ROOT")
+
+#   set(EUDAQ_ROOT "" CACHE PATH
+#       "Path to a minimal EUDAQ build (containing inc/ and build/libdet_event_dict.*)")
+
+#   if (NOT EUDAQ_ROOT)
+#     message(FATAL_ERROR
+#       "EUDAQ not found.\n"
+#       "Either install EUDAQ and set eudaq_DIR, or\n"
+#       "set EUDAQ_ROOT to your local minimal build (e.g. /path/to/from_eudaq).")
+#   endif()
+
+#   set(EUDAQ_INC_DIR "${EUDAQ_ROOT}/inc" CACHE PATH "EUDAQ include directory")
+#   set(EUDAQ_DICT    "${EUDAQ_ROOT}/build/libdet_event_dict.dylib"
+#                     CACHE FILEPATH "EUDAQ detector_event dictionary library")
+
+#   if (NOT EXISTS "${EUDAQ_INC_DIR}")
+#     message(FATAL_ERROR "EUDAQ_INC_DIR does not exist: ${EUDAQ_INC_DIR}")
+#   endif()
+#   if (NOT EXISTS "${EUDAQ_DICT}")
+#     message(FATAL_ERROR "EUDAQ_DICT does not exist: ${EUDAQ_DICT}")
+#   endif()
+# endif()
+
 # Dictionary for EUDAQ detector_event
-add_library(DetEventDict SHARED)
+# add_library(DetEventDict SHARED)
 
-target_include_directories(
-    DetEventDict
-    PUBLIC
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-)
+# target_include_directories(
+#     DetEventDict
+#     PUBLIC
+#     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+# )
 
-ROOT_GENERATE_DICTIONARY(
-    G__DetEventDict
-    ./include/TrackingPipeline/from_eudaq/DetectorEvent.h
-    MODULE
-    DetEventDict
-    LINKDEF
-    ./include/TrackingPipeline/from_eudaq/LinkDef.h
-)
+# ROOT_GENERATE_DICTIONARY(
+#     G__DetEventDict
+#     ./include/TrackingPipeline/from_eudaq/DetectorEvent.h
+#     MODULE
+#     DetEventDict
+#     LINKDEF
+#     ./include/TrackingPipeline/from_eudaq/LinkDef.h
+# )
 
-target_link_libraries(
-    DetEventDict
-    PRIVATE
-    ROOT::RIO
-    ROOT::Physics
-    ROOT::GeomPainter
-)
+# target_link_libraries(
+#     DetEventDict
+#     PRIVATE
+#     ROOT::RIO
+#     ROOT::Physics
+#     ROOT::GeomPainter
+# )
 
 
 # Dictionary for apollonIo detector_event
@@ -139,31 +184,6 @@ find_package(
     REQUIRED
 )
 
-# add_library(
-#     ActsPreprocessing SHARED
-#     src/Preprocessing/AnalysisFunctions.cpp
-#     src/Preprocessing/Preprocessing.cpp
-# )
-
-# target_include_directories(
-#     ActsPreprocessing
-#     PUBLIC
-#     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-# )
-
-# target_link_libraries(
-#     ActsPreprocessing
-#     PUBLIC
-#     ROOT::Core
-#     ROOT::RIO
-#     ROOT::Tree
-#     ROOT::Hist
-#     ROOT::Gpad
-#     ROOT::Physics
-#     DetEventClusteredDict
-#     DetEventDict
-# )
-
 # toml11: header-only TOML library (installed via system package manager)
 find_package(toml11 REQUIRED)
 # source files will be added later
@@ -190,9 +210,9 @@ target_link_libraries(
     ActsPluginFpeMonitoring
     ActsAlignment
     DetEventClusteredDict
-    DetEventDict
+    # DetEventDict
     toml11::toml11
-    # ActsPreprocessing
+    ActsPreprocessing
 )
 
 target_include_directories(

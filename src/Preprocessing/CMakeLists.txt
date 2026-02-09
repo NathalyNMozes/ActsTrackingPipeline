@@ -21,5 +21,5 @@ target_link_libraries(
     ROOT::Gpad
     ROOT::Physics
     DetEventClusteredDict
-    DetEventDict
+    # DetEventDict
 )
