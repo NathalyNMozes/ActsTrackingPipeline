@@ -10,7 +10,8 @@
 #include "TrackingPipeline/Preprocessing/DetectorEvent.hpp"
 #include "TrackingPipeline/Preprocessing/AnalysisFunctions.hpp"
 #include "TrackingPipeline/Preprocessing/PairHash.hpp"
-#include "TrackingPipeline/from_eudaq/DetectorEvent.h"
+// #include "TrackingPipeline/from_eudaq/DetectorEvent.h"
+#include "DetectorEvent.h"
 // ROOT
 #include "TChain.h"
 #include "TFile.h"
