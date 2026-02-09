@@ -336,8 +336,7 @@ int runPipeline(const std::string& configPath) {
 	auto navLogger = Acts::getDefaultLogger(
 			"DetectorNavigator", globalLogLevel);
 	Navigator kfNavigator(navCfg, std::move(navLogger));
-
-	Stepper kfStepper(std::move(field));
+  Stepper kfStepper(field); // Stepper kfStepper(std::move(field));
 
 	auto propLogger = Acts::getDefaultLogger(
 			"Propagator", globalLogLevel);
@@ -389,15 +388,20 @@ int runPipeline(const std::string& configPath) {
   Acts::Vector3 vertexMean = Acts::Vector3::Zero();
   Acts::SquareMatrix3 vertexCov =
       Acts::SquareMatrix3::Identity() * 0_um;
+  GaussianVertexGenerator::Config vtxCfg;
+  vtxCfg.mean = vertexMean;
+  vtxCfg.cov  = vertexCov;
   svc.simVertexGenerator =
-      std::make_shared<GaussianVertexGenerator>(vertexMean, vertexCov);
+      std::make_shared<GaussianVertexGenerator>(vtxCfg);
 
-  svc.simMomentumGenerator = std::make_shared<SphericalMomentumGenerator>();
-  svc.simMomentumGenerator->pRange     = std::make_pair(0.1_GeV, 0.7_GeV);
-  svc.simMomentumGenerator->thetaRange =
+  SphericalMomentumGenerator::Config momCfg;
+  momCfg.pRange     = std::make_pair(0.1_GeV, 0.7_GeV);
+  momCfg.thetaRange =
       std::make_pair(M_PI_2 - 5e-3, M_PI_2 + 5e-3);
-  svc.simMomentumGenerator->phiRange   =
+  momCfg.phiRange   =
       std::make_pair(-5e-3, 5e-3);
+  svc.simMomentumGenerator =
+      std::make_shared<SphericalMomentumGenerator>(momCfg);
 
   svc.simDetSurfaces.clear();
   for (const auto* vol : detector->volumes()) {

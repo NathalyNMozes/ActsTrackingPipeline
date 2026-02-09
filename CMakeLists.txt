@@ -139,31 +139,33 @@ find_package(
     REQUIRED
 )
 
-add_library(
-    ActsPreprocessing SHARED
-    src/Preprocessing/AnalysisFunctions.cpp
-    src/Preprocessing/Preprocessing.cpp
-)
+# add_library(
+#     ActsPreprocessing SHARED
+#     src/Preprocessing/AnalysisFunctions.cpp
+#     src/Preprocessing/Preprocessing.cpp
+# )
 
-target_include_directories(
-    ActsPreprocessing
-    PUBLIC
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-)
+# target_include_directories(
+#     ActsPreprocessing
+#     PUBLIC
+#     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+# )
 
-target_link_libraries(
-    ActsPreprocessing
-    PUBLIC
-    ROOT::Core
-    ROOT::RIO
-    ROOT::Tree
-    ROOT::Hist
-    ROOT::Gpad
-    ROOT::Physics
-    DetEventClusteredDict
-    DetEventDict
-)
+# target_link_libraries(
+#     ActsPreprocessing
+#     PUBLIC
+#     ROOT::Core
+#     ROOT::RIO
+#     ROOT::Tree
+#     ROOT::Hist
+#     ROOT::Gpad
+#     ROOT::Physics
+#     DetEventClusteredDict
+#     DetEventDict
+# )
 
+# toml11: header-only TOML library (installed via system package manager)
+find_package(toml11 REQUIRED)
 # source files will be added later
 add_library(
     TrackingPipelineCore SHARED "")
@@ -189,17 +191,14 @@ target_link_libraries(
     ActsAlignment
     DetEventClusteredDict
     DetEventDict
+    toml11::toml11
     ActsPreprocessing
 )
-
-# toml11 header-only include
-set(TOML11_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/external/toml11")
 
 target_include_directories(
     TrackingPipelineCore
     PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-    $<BUILD_INTERFACE:${TOML11_INCLUDE_DIR}>
 )
 
 # collect the library dependencies
@@ -214,6 +213,7 @@ add_subdirectory(src/TrackFitting)
 add_subdirectory(src/Alignment)
 add_subdirectory(src/Run)
 add_subdirectory(src/Analysis)
+add_subdirectory(src/Preprocessing)
 
 
 # macro to add a run executables
