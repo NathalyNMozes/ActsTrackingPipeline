@@ -156,6 +156,11 @@ RootTrackReader::RootTrackReader(const Config& config,
   m_outputSourceLinks.initialize(m_cfg.outputMeasurements);
   m_outputSeedsGuess.initialize(m_cfg.outputSeedsGuess);
   m_outputSeedsEst.initialize(m_cfg.outputSeedsEst);
+
+  // initialize tracks handle only if requested
+  if (!m_cfg.outputTracks.empty()) {
+    m_outputTracks.initialize(m_cfg.outputTracks);
+  }
 }
 
 std::pair<std::size_t, std::size_t> RootTrackReader::availableEvents() const {
@@ -179,6 +184,11 @@ ProcessCode RootTrackReader::read(const AlgorithmContext& ctx) {
 
     m_outputSourceLinks(ctx, {});
 
+    // If tracks are configured, write empty collection
+    if (!m_cfg.outputTracks.empty()) {
+      m_outputTracks(ctx, CleaningTracks{});
+    }
+
     // Return success flag
     return ProcessCode::SUCCESS;
   }
@@ -194,6 +204,7 @@ ProcessCode RootTrackReader::read(const AlgorithmContext& ctx) {
   std::vector<Acts::SourceLink> sourceLinks{};
   Seeds seedsGuess{};
   Seeds seedsEst{};
+  CleaningTracks tracks{};
   std::size_t eventId = std::get<0>(*it);
   std::size_t sslIdx = 0;
   for (auto entry = std::get<1>(*it); entry < std::get<2>(*it); entry++) {
@@ -230,6 +241,18 @@ ProcessCode RootTrackReader::read(const AlgorithmContext& ctx) {
         vertexEst, ipDirectionEst, m_charge / m_ipMomentumEst->P(), ipCovEst,
         hypothesis);
 
+
+    //for track cleaning:
+    TrackDescriptor trk;
+    trk.eventId      = eventId;
+    trk.trackId      = m_trackId;
+    trk.pdgId        = m_pdgId;
+    trk.charge       = m_charge;
+    trk.chi2Smoothed = m_chi2Smoothed;
+    trk.ndf          = m_ndf;
+    trk.trackHitsGlobal.clear();
+    //
+
     std::vector<Acts::SourceLink> trackSourceLinks{};
     for (std::size_t i = 0; i < m_trackHitsGlobal->size(); i++) {
       Acts::Vector2 trackHitLocal(m_trackHitsLocal->at(i).X(),
@@ -247,9 +270,14 @@ ProcessCode RootTrackReader::read(const AlgorithmContext& ctx) {
                                      geoId, eventId, sslIdx);
       sourceLinks.push_back(Acts::SourceLink{obsSourceLink});
       trackSourceLinks.push_back(Acts::SourceLink{obsSourceLink});
-
+      trk.trackHitsGlobal.push_back(trackHitGlobal); //for track cleaning
       sslIdx++;
     }
+    // for track cleaning: only if configured
+    if (!m_cfg.outputTracks.empty()) {
+      tracks.push_back(std::move(trk));
+    }
+
     seedsGuess.emplace_back(trackSourceLinks, ipParametersGuess,
                             static_cast<int>(seedsGuess.size()));
     seedsEst.emplace_back(trackSourceLinks, ipParametersEst,
@@ -261,6 +289,11 @@ ProcessCode RootTrackReader::read(const AlgorithmContext& ctx) {
   m_outputSourceLinks(ctx, std::move(sourceLinks));
   m_outputSeedsGuess(ctx, std::move(seedsGuess));
   m_outputSeedsEst(ctx, std::move(seedsEst));
+
+  // for track cleaning: write tracks if requested
+  if (!m_cfg.outputTracks.empty()) {
+    m_outputTracks(ctx, std::move(tracks));
+  }
 
   // Return success flag
   return ProcessCode::SUCCESS;

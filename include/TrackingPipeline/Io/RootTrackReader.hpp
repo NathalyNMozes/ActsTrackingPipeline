@@ -77,6 +77,9 @@ class RootTrackReader : public IReader {
   /// WriteDataHandle for the estimated seed data
   WriteDataHandle<Seeds> m_outputSeedsEst{this, "SeedsEst"};
 
+  /// WriteDataHandle for track collection (optional-for cleaning)
+  WriteDataHandle<CleaningTracks> m_outputTracks{this, "Tracks"};
+
   std::unique_ptr<const Acts::Logger> m_logger;
 
   /// Mutex used to protect multi-threaded reads

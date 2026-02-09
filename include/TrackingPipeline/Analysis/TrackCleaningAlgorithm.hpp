@@ -31,4 +31,3 @@ class TrackCleaningAlgorithm final : public IAlgorithm {
   ReadDataHandle<ActsContainer>     m_inputActs{this, "InputActsTracks"};
   WriteDataHandle<CleaningContainer> m_outputTracks{this, "OutputTracks"};
 };
-
