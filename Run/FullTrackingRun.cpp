@@ -83,48 +83,48 @@ int main() {
     }
   }
 
-  AlignmentParametersProvider::Config alignmentProviderCfg;
-  alignmentProviderCfg.filePath =
-      "/home/romanurmanov/work/E320/E320Prototype/E320Prototype_analysis/data/"
-      "alignment/global/aligned/"
-      "alignment-parameters.root";
-  alignmentProviderCfg.treeName = "alignment-parameters";
-  AlignmentParametersProvider alignmentProvider(alignmentProviderCfg);
-  auto aStore = alignmentProvider.getAlignmentStore();
+//   AlignmentParametersProvider::Config alignmentProviderCfg;
+//   alignmentProviderCfg.filePath =
+//       "/home/romanurmanov/work/E320/E320Prototype/E320Prototype_analysis/data/"
+//       "alignment/global/aligned/"
+//       "alignment-parameters.root";
+//   alignmentProviderCfg.treeName = "alignment-parameters";
+//   AlignmentParametersProvider alignmentProvider(alignmentProviderCfg);
+//   auto aStore = alignmentProvider.getAlignmentStore();
 
-  AlignmentContext alignCtx(aStore);
-  Acts::GeometryContext testCtx{alignCtx};
-  for (auto& v : detector->volumes()) {
-    for (auto& s : v->surfaces()) {
-      if (s->geometryId().sensitive()) {
-        std::cout << "-----------------------------------\n";
-        std::cout << "SURFACE " << s->geometryId() << "\n";
-        std::cout << "CENTER " << s->center(testCtx).transpose() << " -- "
-                  << s->center(Acts::GeometryContext()).transpose() << "\n";
-        std::cout << "NORMAL "
-                  << s->normal(testCtx, s->center(testCtx),
-                               Acts::Vector3::UnitY())
-                         .transpose()
-                  << " -- "
-                  << s->normal(testCtx, s->center(Acts::GeometryContext()),
-                               Acts::Vector3::UnitY())
-                         .transpose()
-                  << "\n";
-        std::cout << "ROTATION \n"
-                  << s->transform(testCtx).rotation() << " -- \n"
-                  << "\n"
-                  << s->transform(Acts::GeometryContext()).rotation() << "\n";
+//   AlignmentContext alignCtx(aStore);
+//   Acts::GeometryContext testCtx{alignCtx};
+//   for (auto& v : detector->volumes()) {
+//     for (auto& s : v->surfaces()) {
+//       if (s->geometryId().sensitive()) {
+//         std::cout << "-----------------------------------\n";
+//         std::cout << "SURFACE " << s->geometryId() << "\n";
+//         std::cout << "CENTER " << s->center(testCtx).transpose() << " -- "
+//                   << s->center(Acts::GeometryContext()).transpose() << "\n";
+//         std::cout << "NORMAL "
+//                   << s->normal(testCtx, s->center(testCtx),
+//                                Acts::Vector3::UnitY())
+//                          .transpose()
+//                   << " -- "
+//                   << s->normal(testCtx, s->center(Acts::GeometryContext()),
+//                                Acts::Vector3::UnitY())
+//                          .transpose()
+//                   << "\n";
+//         std::cout << "ROTATION \n"
+//                   << s->transform(testCtx).rotation() << " -- \n"
+//                   << "\n"
+//                   << s->transform(Acts::GeometryContext()).rotation() << "\n";
 
-        std::cout << "EXTENT "
-                  << s->polyhedronRepresentation(testCtx, 1000).extent()
-                  << "\n -- \n"
-                  << s->polyhedronRepresentation(Acts::GeometryContext(), 1000)
-                         .extent()
-                  << "\n";
-      }
-    }
-  }
-  gctx = Acts::GeometryContext{alignCtx};
+//         std::cout << "EXTENT "
+//                   << s->polyhedronRepresentation(testCtx, 1000).extent()
+//                   << "\n -- \n"
+//                   << s->polyhedronRepresentation(Acts::GeometryContext(), 1000)
+//                          .extent()
+//                   << "\n";
+//       }
+//     }
+//   }
+//   gctx = Acts::GeometryContext{alignCtx};
 
   // --------------------------------------------------------------
   // The magnetic field setup
@@ -197,8 +197,8 @@ int main() {
   seqCfg.logLevel = logLevel;
   Sequencer sequencer(seqCfg);
 
-  sequencer.addContextDecorator(
-      std::make_shared<GeometryContextDecorator>(aStore));
+//   sequencer.addContextDecorator(
+//       std::make_shared<GeometryContextDecorator>(aStore));
 
   // Add the sim data reader
   E320Io::E320RootDataReader::Config readerCfg;
@@ -206,9 +206,9 @@ int main() {
   readerCfg.treeName = "MyTree";
   readerCfg.eventKey = "event";
   readerCfg.surfaceMap = surfaceMap;
-  std::string pathToDir =
-      "/home/romanurmanov/work/E320/E320Prototype/"
-      "E320Prototype_dataInRootFormat/E320Shift_Fev_2025/processed/data_Run502";
+  std::string pathToDir = "/Users/nathalyn/Desktop/Masters/Acts-E320-data/input/Run502_preprocessed";
+    //   "/home/romanurmanov/work/E320/E320Prototype/"
+    //   "E320Prototype_dataInRootFormat/E320Shift_Fev_2025/processed/data_Run502";
 
   // Get the paths to the files in the directory
   for (const auto& entry : std::filesystem::directory_iterator(pathToDir)) {
@@ -357,9 +357,9 @@ int main() {
   auto measurementWriterCfg = RootMeasurementWriter::Config();
   measurementWriterCfg.inputMeasurements = "Measurements";
   measurementWriterCfg.treeName = "measurements";
-  measurementWriterCfg.filePath =
-      "/home/romanurmanov/work/E320/E320Prototype/E320Prototype_analysis/data/"
-      "measurements.root";
+  measurementWriterCfg.filePath = "/Users/nathalyn/Desktop/Masters/Acts-E320-data/output/Run502/measurements.root";
+    //   "/home/romanurmanov/work/E320/E320Prototype/E320Prototype_analysis/data/"
+    //   "measurements.root";
 
   sequencer.addWriter(
       std::make_shared<RootMeasurementWriter>(measurementWriterCfg, logLevel));
@@ -368,9 +368,9 @@ int main() {
   auto seedWriterCfg = RootSeedWriter::Config();
   seedWriterCfg.inputSeeds = "Seeds";
   seedWriterCfg.treeName = "seeds";
-  seedWriterCfg.filePath =
-      "/home/romanurmanov/work/E320/E320Prototype/E320Prototype_analysis/data/"
-      "seeds.root";
+  seedWriterCfg.filePath = "/Users/nathalyn/Desktop/Masters/Acts-E320-data/output/Run502/seeds.root";
+    //   "/home/romanurmanov/work/E320/E320Prototype/E320Prototype_analysis/data/"
+    //   "seeds.root";
 
   sequencer.addWriter(
       std::make_shared<RootSeedWriter>(seedWriterCfg, logLevel));
@@ -383,9 +383,9 @@ int main() {
   trackWriterCfg.referenceSurface = trackingRefSurface.get();
   trackWriterCfg.inputTracks = "Tracks";
   trackWriterCfg.treeName = "fitted-tracks";
-  trackWriterCfg.filePath =
-      "/home/romanurmanov/work/E320/E320Prototype/E320Prototype_analysis/data/"
-      "fitted-tracks.root";
+  trackWriterCfg.filePath = "/Users/nathalyn/Desktop/Masters/Acts-E320-data/output/Run502/fitted-tracks.root";
+    //   "/home/romanurmanov/work/E320/E320Prototype/E320Prototype_analysis/data/"
+    //   "fitted-tracks.root";
 
   sequencer.addWriter(
       std::make_shared<RootTrackWriter>(trackWriterCfg, logLevel));
